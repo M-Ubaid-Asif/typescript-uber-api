@@ -10,6 +10,7 @@ export const registerInput: ObjectSchema = Joi.object({
     'string.empty': 'Email must not be empty',
     'string.base': 'Email should be a type of string',
     'any.required': 'Email is required',
+    'string.email': 'Invalid email',
   }),
   password: Joi.string().min(4).required().messages({
     'string.min': 'Password should be atleast 4 character long',
@@ -29,5 +30,18 @@ export const registerInput: ObjectSchema = Joi.object({
     'string.base': 'Phone no. should be type of number',
     'string.min': 'Invalid phone no.',
     'any.required': 'Phone no. is required',
+  }),
+})
+
+export const loginInput: ObjectSchema = Joi.object({
+  email: Joi.string().email().lowercase().required().messages({
+    'string.empty': 'Email must not be empty',
+    'string.base': 'Email should be a type of string',
+    'any.required': 'Email is required',
+    'string.email': 'Invalid email',
+  }),
+  password: Joi.string().required().messages({
+    'string.empty': 'Password must not be empty',
+    'any.required': 'Password is required',
   }),
 })
