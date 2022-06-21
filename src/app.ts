@@ -1,5 +1,6 @@
 import logger from './config/logger'
 import express, { Request, Response, NextFunction, Application } from 'express'
+import router from './components/index'
 import errorHandler from './helpers/errorHandler'
 
 const app: Application = express()
@@ -21,9 +22,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 })
 
 // routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('hello world')
-})
+app.use('/api/v1', router)
 
 // error handler
 app.use(errorHandler)
