@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import AppError from 'utils/appError'
-import { VerifyToken } from 'utils/jwt'
+import AppError from '../utils/appError'
+import { VerifyToken } from '../utils/jwt'
 
 export const userAuth = async (
   req: Request,
@@ -20,6 +20,14 @@ export const userAuth = async (
     req.user = decode
     next()
   } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      error.statusCode = 401
+      error.message = 'Session expired! please login again'
+    }
+    if (error.name === 'JsonWebTokenError') {
+      error.statusCode = 401
+      error.message = 'Unauthorized'
+    }
     next(error)
   }
 }
