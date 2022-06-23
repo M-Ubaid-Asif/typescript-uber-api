@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 import { TUser } from './types'
 import db from '../../connections/masterDB'
 
@@ -32,6 +33,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    passwordResetToken: {
+      type: String,
+    },
+    passwordResetExpired: Date,
   },
   {
     timestamps: true,
@@ -39,6 +44,9 @@ const userSchema = new Schema(
       transform(doc, ret) {
         delete ret.password
         delete ret._v
+        delete ret.isDeleted
+        delete ret.passwordResetToken
+        delete ret.passwordResetExpired
         return ret
       },
     },
@@ -56,6 +64,18 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password)
+}
+
+// create password reset token
+userSchema.methods.createPasswordResetToken = async function () {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+  this.passwordResetExpired = Date.now() + 10 * 60 * 1000 // 10 min
+  await this.save()
+  return resetToken
 }
 
 export default db.model<TUser>('User', userSchema)
