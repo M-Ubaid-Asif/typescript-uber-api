@@ -9,5 +9,8 @@ export interface userInput {
 
 export interface TUser extends userInput, Document {
   isDeleted: boolean
+  passwordResetToken: string
+  passwordResetExpired: Date
   comparePassword: (password: string) => boolean
+  createPasswordResetToken: () => string
 }
