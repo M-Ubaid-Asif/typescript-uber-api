@@ -1,8 +1,23 @@
 import { Request, Response, NextFunction } from 'express'
+import crypto from 'crypto'
 import AppError from '../../utils/appError'
-import { loginInput, registerInput } from '../../helpers/validation'
-import { create, findOneBy } from './userService'
+import {
+  forgotPasswordInput,
+  loginInput,
+  registerInput,
+  resetPasswordInput,
+  updateUserInput,
+} from '../../helpers/validation'
+import {
+  create,
+  findAndUpdate,
+  findOneBy,
+  forgotPasswordToken,
+  resetPasswordService,
+} from './userService'
 import { GenerateToken } from '../../utils/jwt'
+import sendEmail from '../../utils/email'
+import logger from '../../config/logger'
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -72,6 +87,96 @@ export const loginUser = async (
     if (error.isJoi === true) {
       error.statusCode = 422
     }
+    next(error)
+  }
+}
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const _id = req.user._id
+    const data = await updateUserInput.validateAsync(req.body)
+    const updatedDoc = await findAndUpdate({ _id }, data)
+    if (!updatedDoc) {
+      throw new AppError('Failed to update user', 400)
+    }
+    return res.status(200).json({
+      status: 'success',
+      message: 'updated successfully',
+      data: updatedDoc,
+    })
+  } catch (error) {
+    if (error.isJoi === true) {
+      error.statusCode = 422
+    }
+    next(error)
+  }
+}
+
+//======================== forgot password==========================
+
+export const forgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info('inside forget password controller')
+    const { email } = await forgotPasswordInput.validateAsync(req.body)
+
+    const resetToken = await forgotPasswordToken(email)
+
+    const resetUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/user/resetPassword/${resetToken}`
+
+    const text = `Forgot your password?\nReset your password here ${resetUrl}\nif you do not forgot your password, Please ignore this email\n your password is only valid for 10 min`
+
+    const mailed = await sendEmail({
+      email: email,
+      subject: 'forgot password',
+      message: text,
+    })
+
+    if (!mailed) {
+      throw new AppError('failed to send email', 500)
+    }
+    return res.status(200).json({
+      status: 'success',
+      message: 'password reset link successfully sent',
+    })
+  } catch (error: any) {
+    next(error)
+  }
+}
+
+// ===================== reset password ===========================
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { newPassword } = await resetPasswordInput.validateAsync(req.body)
+    const token = req.params.token
+    const passwordResetToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex')
+    const reset = await resetPasswordService(passwordResetToken, newPassword)
+    if (!reset) {
+      throw new AppError('password reset link has been expired!')
+    }
+
+    return res.status(200).json({
+      statau: 'Success',
+      message: 'password successfully changed',
+    })
+  } catch (error) {
     next(error)
   }
 }
