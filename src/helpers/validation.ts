@@ -47,6 +47,50 @@ export const loginInput: ObjectSchema = Joi.object({
   }),
 })
 
+export const updateUserInput: ObjectSchema = Joi.object({
+  name: Joi.string().messages({
+    'string.empty': 'Name must not be empty',
+    'string.base': 'Name should be a type of string',
+  }),
+  email: Joi.string().email().lowercase().messages({
+    'string.empty': 'Email must not be empty',
+    'string.base': 'Email should be a type of string',
+    'string.email': 'Invalid email',
+  }),
+  role: Joi.string().lowercase().messages({
+    'string.empty': 'Role must not be empty',
+    'string.base': 'Role should be a type of string',
+  }),
+  phoneNo: Joi.number().min(10).messages({
+    'number.empty': 'Phone no. must not be empty',
+    'number.base': 'Phone no. should be type of number',
+    'number.min': 'Invalid phone no.',
+  }),
+})
+
+// ======================== forgot Password input validation ========================
+
+export const forgotPasswordInput: ObjectSchema = Joi.object({
+  email: Joi.string().email().lowercase().required().messages({
+    'string.empty': 'Email must not be empty',
+    'string.base': 'Email should be a type of string',
+    'string.email': 'Invalid email',
+    'any.required': 'Email is required',
+  }),
+})
+
+export const resetPasswordInput: ObjectSchema = Joi.object({
+  newPassword: Joi.string().min(4).required().messages({
+    'string.min': 'Password should be atleast 4 character long',
+    'string.empty': 'Password must not be empty',
+    'any.required': 'Password is required',
+  }),
+  confirmPassword: Joi.any().valid(Joi.ref('newassword')).required().messages({
+    'any.only': 'Password do not match',
+    'any.required': 'Confirm password is required',
+  }),
+})
+
 // =========================== cab create input validation ===========================================
 export const cabInput: ObjectSchema = Joi.object({
   driver: Joi.string().required().messages({
