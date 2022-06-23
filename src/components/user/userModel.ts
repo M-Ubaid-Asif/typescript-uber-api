@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
-import crypto from 'crypto'
+import crypto from 'crt'
 import { TUser } from './types'
 import db from '../../connections/masterDB'
 
