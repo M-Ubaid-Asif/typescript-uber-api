@@ -57,7 +57,7 @@ const bookingSchema = new mongoose.Schema(
 )
 
 bookingSchema.pre(/^find/, async function (next) {
-  this.populate('bookedBy', 'name email phone')
+  this.populate('bookedBy', 'name email phoneNo')
   this.populate('cab', '-isDeleted -__v')
   next()
 })
