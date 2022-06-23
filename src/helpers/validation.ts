@@ -1,5 +1,5 @@
 import Joi, { ObjectSchema } from '@hapi/joi'
-
+// =========================== user registration validation===========================================
 export const registerInput: ObjectSchema = Joi.object({
   name: Joi.string().required().messages({
     'string.empty': 'Name must not be empty',
@@ -33,6 +33,7 @@ export const registerInput: ObjectSchema = Joi.object({
   }),
 })
 
+// =========================== user login validation ===========================================
 export const loginInput: ObjectSchema = Joi.object({
   email: Joi.string().email().lowercase().required().messages({
     'string.empty': 'Email must not be empty',
@@ -46,6 +47,7 @@ export const loginInput: ObjectSchema = Joi.object({
   }),
 })
 
+// =========================== cab create input validation ===========================================
 export const cabInput: ObjectSchema = Joi.object({
   driver: Joi.string().required().messages({
     'string.empty': 'driver must not be empty',
@@ -67,6 +69,7 @@ export const cabInput: ObjectSchema = Joi.object({
     }),
 })
 
+// =========================== cab update input validation ===========================================
 export const cabUpdateInput: ObjectSchema = Joi.object({
   driver: Joi.string().messages({
     'string.empty': 'driver must not be empty',
@@ -83,4 +86,45 @@ export const cabUpdateInput: ObjectSchema = Joi.object({
     'object.empty': 'currentLoc must not be empty',
     'object.base': 'currentLoc must be provided in an object',
   }),
+})
+
+// =========================== cab booking validation ===========================================
+
+export const cabBokingInput: ObjectSchema = Joi.object({
+  currentAddress: Joi.object({
+    coordinates: Joi.array().required().length(2).messages({
+      'array.empty': 'cordinates must not be empty',
+      'any.required': 'coordinates is required field in currentAddress',
+      'array.base': 'coordinates must be provided in an array',
+      'array.length': 'please provide lat and lan in coordinates',
+    }),
+    address: Joi.string().messages({
+      'string.empty': 'address must not be empty',
+      'string.base': 'address must be type of string',
+    }),
+  })
+    .required()
+    .messages({
+      'object.empty': 'currentAddress must not be empty',
+      'object.base': 'currentAddress must be provided in an object',
+      'any.required': 'currentAddress is required',
+    }),
+  destinationAddress: Joi.object({
+    coordinates: Joi.array().required().length(2).messages({
+      'array.empty': 'cordinates must not be empty',
+      'any.required': 'coordinates is required field in destinationAddress',
+      'array.base': 'coordinates must be provided in an array',
+      'array.length': 'please provide lat and lan in coordinates',
+    }),
+    address: Joi.string().messages({
+      'string.empty': 'address must not be empty',
+      'string.base': 'address must be type of string',
+    }),
+  })
+    .required()
+    .messages({
+      'object.empty': 'destinationAddress must not be empty',
+      'object.base': 'destinationAddress must be provided in an object',
+      'any.required': 'destinationAddress is required',
+    }),
 })
