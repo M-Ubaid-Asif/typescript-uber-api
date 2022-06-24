@@ -169,7 +169,7 @@ export const resetPassword = async (
       .digest('hex')
     const reset = await resetPasswordService(passwordResetToken, newPassword)
     if (!reset) {
-      throw new AppError('password reset link has been expired!')
+      throw new AppError('password reset link has been expired! or Invalid')
     }
 
     return res.status(200).json({
