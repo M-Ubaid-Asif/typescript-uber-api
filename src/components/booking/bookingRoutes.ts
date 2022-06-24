@@ -8,6 +8,7 @@ import {
   getAllBookings,
   getdriverbooking,
   getMyBookings,
+  getNearByCab,
 } from './bookingController'
 
 const router = express.Router()
@@ -18,7 +19,7 @@ router.get('/', userAuth, getAllBookings)
 
 router.get('/history', userAuth, getMyBookings)
 router.get('/driver', userAuth, getdriverbooking)
-
+router.get('/nearbycab', userAuth, getNearByCab)
 router.delete('/:id', userAuth, cancelBooking)
 router.delete('/complete/:id', userAuth, dropped)
 
