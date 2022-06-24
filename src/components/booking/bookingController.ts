@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import AppError from '../../utils/appError'
-import { cabBokingInput } from '../../helpers/validation'
+import {
+  cabBokingInput,
+  cabInput,
+  getNearByCabInput,
+} from '../../helpers/validation'
 import {
   bookCabService,
   bookingForCabDriverService,
@@ -8,6 +12,7 @@ import {
   createBookingService,
   droppedDeletebookingService,
   getAll,
+  getNearCabService,
   getUserBookings,
 } from './bookingService'
 // ======================================== create booking ================================
@@ -169,6 +174,29 @@ export const dropped = async (
     return res
       .status(200)
       .json({ status: 'success', message: 'pessenger dropped!' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// =================================== get near by cab for user =============================
+
+export const getNearByCab = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { lat, lon } = await getNearByCabInput.validateAsync(req.body)
+    const cabs = await getNearCabService(lat, lon)
+
+    return cabs.length > 0
+      ? res.status(200).json({
+          cabs,
+        })
+      : res.status(403).json({
+          message: 'no cab are available in your area!',
+        })
   } catch (error) {
     next(error)
   }
