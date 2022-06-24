@@ -78,14 +78,14 @@ export const forgotPasswordInput: ObjectSchema = Joi.object({
     'any.required': 'Email is required',
   }),
 })
-
+// ====================== passsword reset input ===================
 export const resetPasswordInput: ObjectSchema = Joi.object({
   newPassword: Joi.string().min(4).required().messages({
     'string.min': 'Password should be atleast 4 character long',
     'string.empty': 'Password must not be empty',
     'any.required': 'Password is required',
   }),
-  confirmPassword: Joi.any().valid(Joi.ref('newassword')).required().messages({
+  confirmPassword: Joi.any().valid(Joi.ref('newPassword')).required().messages({
     'any.only': 'Password do not match',
     'any.required': 'Confirm password is required',
   }),
@@ -171,4 +171,18 @@ export const cabBokingInput: ObjectSchema = Joi.object({
       'object.base': 'destinationAddress must be provided in an object',
       'any.required': 'destinationAddress is required',
     }),
+})
+
+// =================== nearcabinput validation =============================
+export const getNearByCabInput: ObjectSchema = Joi.object({
+  lat: Joi.number().required().messages({
+    'number.empty': 'lat must not be empty',
+    'number.base': 'lat should be type of number',
+    'any.required': 'lat is required',
+  }),
+  lon: Joi.number().required().messages({
+    'number.empty': 'lon must not be empty',
+    'number.base': 'lon should be type of number',
+    'any.required': 'lon is required',
+  }),
 })
