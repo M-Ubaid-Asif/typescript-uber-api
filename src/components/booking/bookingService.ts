@@ -251,7 +251,6 @@ export const droppedDeletebookingService = async (
   _id: string
 ): Promise<boolean> => {
   try {
-    console.log(driver, '=====', _id)
     const cab = await Cab.findOne({ driver, booked: true })
     if (!cab) {
       throw new AppError('no bookings or already deleted', 403)
@@ -266,7 +265,32 @@ export const droppedDeletebookingService = async (
     await cab.save()
     return true
   } catch (error) {
-    console.log(driver, '=====', _id)
+    throw new AppError(error, 400)
+  }
+}
+
+export const getNearCabService = async (
+  lat: number,
+  lon: number
+): Promise<TCab[]> => {
+  try {
+    const radius = 10 / 3963.2
+
+    const filter = {
+      booked: false,
+      currentLoc: {
+        $geoWithin: {
+          $centerSphere: [[lat, lon], radius],
+        },
+      },
+    }
+
+    const cabs = await Cab.find(filter)
+    if (!cabs) {
+      throw new AppError('cabs are not available in your area', 403)
+    }
+    return cabs
+  } catch (error) {
     throw new AppError(error, 400)
   }
 }
