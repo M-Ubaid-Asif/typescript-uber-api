@@ -64,7 +64,7 @@ export const forgotPasswordToken = async (email: string): Promise<string> => {
 export const resetPasswordService = async (
   passwordResetToken: string,
   newPassword: string
-) => {
+): Promise<boolean> => {
   try {
     const user = await User.findOne(
       {
@@ -75,14 +75,14 @@ export const resetPasswordService = async (
     )
 
     if (!user) {
-      throw new AppError('password reset link has been expired!', 400)
+      return false
     }
 
     user.password = newPassword
     user.passwordResetToken = undefined
     user.passwordResetExpired = undefined
     const doc = await user.save()
-    return doc
+    return doc ? true : false
   } catch (error) {
     throw new AppError(error, 400)
   }
