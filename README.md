@@ -31,11 +31,11 @@
 
 #### Run (In terminal)
 
-##### first run it will create dist directory or run it
+#### first run it will create dist directory or run it
 
 npm run dev
 
-##### if dist is exist then only run
+#### if dist is exist then only run
 
 npm run start
 
