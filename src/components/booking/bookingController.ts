@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import AppError from '../../utils/appError'
-import {
-  cabBokingInput,
-  cabInput,
-  getNearByCabInput,
-} from '../../helpers/validation'
+import { cabBokingInput, getNearByCabInput } from '../../helpers/validation'
 import {
   bookCabService,
   bookingForCabDriverService,
@@ -20,7 +16,7 @@ export const createBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const data = await cabBokingInput.validateAsync(req.body)
     const userId = req.user._id
@@ -47,7 +43,7 @@ export const getAllBookings = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can get all bookings', 400)
@@ -66,7 +62,7 @@ export const cancelBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const _id = req.params.id
     const userId = req.user._id
@@ -88,7 +84,7 @@ export const getMyBookings = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const userId = req.user._id
     const bookings = await getUserBookings(userId)
@@ -105,7 +101,7 @@ export const bookCabByid = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const cabId = req.params.cabId
     const userId = req.user._id
@@ -135,7 +131,7 @@ export const getdriverbooking = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'driver') {
       throw new AppError('access denied', 400)
@@ -159,7 +155,7 @@ export const dropped = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'driver') {
       throw new AppError('access denied', 400)
@@ -185,7 +181,7 @@ export const getNearByCab = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const { lat, lon } = await getNearByCabInput.validateAsync(req.body)
     const cabs = await getNearCabService(lat, lon)

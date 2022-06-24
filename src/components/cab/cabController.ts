@@ -13,7 +13,7 @@ export const addCab = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can add cab', 400)
@@ -43,7 +43,7 @@ export const getCabs = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can get cabs', 400)
@@ -61,7 +61,7 @@ export const getcab = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can get cab', 400)
@@ -83,7 +83,7 @@ export const updateCab = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can update cab', 400)
@@ -103,7 +103,7 @@ export const deleteCab = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     if (req.user.role !== 'admin') {
       throw new AppError('only admin can delete cab', 400)
