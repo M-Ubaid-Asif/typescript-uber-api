@@ -1,7 +1,6 @@
 import AppError from '../utils/appError'
-import { Response, Request, NextFunction } from 'express'
+import { Response, Request } from 'express'
 import logger from '../config/logger'
-import config from '../config/config'
 
 const handleCastErrordb = (err: any) => {
   const message = `Invalid ${err.path}:${err.value}`
@@ -37,12 +36,11 @@ const sendErrorDevelopment = (err: any, res: Response) => {
   })
 }
 
-export default (err: any, req: Request, res: Response, next: NextFunction) => {
+export default (err: any, req: Request, res: Response) => {
   logger.info('inside error handler')
   err.statusCode = err.statusCode || 500
   err.status = err.status || 'error'
   err.status === true ? (err.status = 'fail') : err.status
-  console.log(err)
   if (process.env.NODE_ENV === 'production') {
     if (err.name === 'CastError') {
       err = handleCastErrordb(err)
