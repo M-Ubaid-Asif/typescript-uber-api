@@ -22,7 +22,7 @@ export const registerUser = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     //   validate req.body for register
     const data = await registerInput.validateAsync(req.body)
@@ -57,7 +57,7 @@ export const loginUser = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const data = await loginInput.validateAsync(req.body)
     const { email, password } = data
@@ -95,7 +95,7 @@ export const updateUser = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const _id = req.user._id
     const data = await updateUserInput.validateAsync(req.body)
@@ -122,7 +122,7 @@ export const forgetPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     logger.info('inside forget password controller')
     const { email } = await forgotPasswordInput.validateAsync(req.body)
@@ -159,7 +159,7 @@ export const resetPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void | Response> => {
   try {
     const { newPassword } = await resetPasswordInput.validateAsync(req.body)
     const token = req.params.token
