@@ -1,5 +1,5 @@
 import AppError from '../utils/appError'
-import { Response, Request } from 'express'
+import { Response, Request, NextFunction } from 'express'
 import logger from '../config/logger'
 
 const handleCastErrordb = (err: any) => {
@@ -35,8 +35,8 @@ const sendErrorDevelopment = (err: any, res: Response) => {
     statck: err.stack,
   })
 }
-
-export default (err: any, req: Request, res: Response) => {
+// eslint-disable-next-line
+export default (err: any, req: Request, res: Response, next: NextFunction) => {
   logger.info('inside error handler')
   err.statusCode = err.statusCode || 500
   err.status = err.status || 'error'
