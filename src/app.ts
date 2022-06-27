@@ -1,5 +1,6 @@
 import logger from './config/logger'
 import express, { Request, Response, NextFunction, Application } from 'express'
+import morgan from 'morgan'
 import router from './components/index'
 import errorHandler from './helpers/errorHandler'
 
@@ -8,18 +9,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // loggin all the requests in middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  logger.info(
-    `METHOD - [${req.method}], URL-[${req.url}], IP - [${req.socket.remoteAddress}]`
-  )
-
-  res.on('finish', () => {
-    logger.info(
-      `METHOD - [${req.method}], URL-[${req.url}], IP - [${req.socket.remoteAddress}], status - [${res.statusCode}]`
-    )
-  })
-  next()
-})
+app.use(morgan('dev'))
 
 // routes
 app.use('/api/v1', router)
