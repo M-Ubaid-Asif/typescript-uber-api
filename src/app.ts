@@ -1,5 +1,4 @@
-import logger from './config/logger'
-import express, { Request, Response, NextFunction, Application } from 'express'
+import express, { Request, Response, Application } from 'express'
 import morgan from 'morgan'
 import router from './components/index'
 import errorHandler from './helpers/errorHandler'
